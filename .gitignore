@@ -1,0 +1,20 @@
+# Backend
+emebel_api/.env
+emebel_api/db.sqlite3
+emebel_api/venv/
+emebel_api/media/
+emebel_api/__pycache__/
+emebel_api/*.pyc
+emebel_api/staticfiles/
+
+# Frontend
+emebel-crm-v2/node_modules/
+emebel-crm-v2/dist/
+emebel-crm-v2/.env
+emebel-crm-v2/.env.local
+
+# General
+.idea/
+.vscode/
+*.log
+.DS_Store

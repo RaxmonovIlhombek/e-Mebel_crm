@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: emebel-api
+    env: python
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate
+    startCommand: gunicorn project.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: ENV_NAME
+        value: production
+      - key: DEBUG
+        value: "False"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: emebel-db
+          property: connectionString
+
+  - type: worker
+    name: emebel-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python run_bot_polling.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: ENV_NAME
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: emebel-db
+          property: connectionString
+
+databases:
+  - name: emebel-db
+    plan: free
