@@ -202,33 +202,36 @@ class DashboardView(APIView):
         recent           = orders.select_related('client', 'manager').order_by('-created_at')[:10]
 
         # 4. Monthly Trend
+        from django.db.models.functions import TruncMonth
+        from django.db.models import Count
         trend_months = 18 if isAdmin else 6
+        start_trend = (today - timedelta(days=30 * trend_months)).replace(day=1)
+
+        monthly_counts_qs = orders.filter(created_at__gte=start_trend).annotate(
+            month=TruncMonth('created_at')
+        ).values('month').annotate(c=Count('id')).order_by('month')
+        
+        monthly_revs_qs = Payment.objects.filter(
+            order__in=orders, created_at__gte=start_trend
+        ).annotate(
+            month=TruncMonth('created_at')
+        ).values('month').annotate(s=Sum('amount')).order_by('month')
+
+        counts_dict = {item['month'].strftime('%b %Y'): item['c'] for item in monthly_counts_qs if item['month']}
+        revs_dict = {item['month'].strftime('%b %Y'): float(item['s']) for item in monthly_revs_qs if item['month']}
+
         monthly_trend = []
         for i in range(trend_months - 1, -1, -1):
             m_date = today.replace(day=1)
             for _ in range(i):
-                try:
-                    m_date = (m_date - timedelta(days=1)).replace(day=1)
-                except ValueError: pass # basic protection
+                try: m_date = (m_date - timedelta(days=1)).replace(day=1)
+                except ValueError: pass
             
-            m_start = m_date
-            m_end = (m_start.replace(day=28) + timedelta(days=4)).replace(day=1)
-            
-            rev = Payment.objects.filter(
-                order__in=orders,
-                created_at__date__gte=m_start, 
-                created_at__date__lt=m_end
-            ).aggregate(s=Sum('amount'))['s'] or 0
-            
-            cnt = orders.filter(
-                created_at__date__gte=m_start, 
-                created_at__date__lt=m_end
-            ).count()
-            
+            key = m_date.strftime('%b %Y')
             monthly_trend.append({
-                'month':   m_start.strftime('%b %Y'), 
-                'revenue': float(rev), 
-                'count':   cnt
+                'month': key,
+                'revenue': revs_dict.get(key, 0.0),
+                'count': counts_dict.get(key, 0)
             })
 
         # 5. Base Response
