@@ -3,4 +3,4 @@ db.sqlite3
 .idea/
 __pycache__/
 *.pyc
-media/
+# media/ commented out for demo images
