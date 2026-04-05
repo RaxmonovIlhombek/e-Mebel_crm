@@ -1,71 +1,87 @@
 <!DOCTYPE html>
 <html lang="uz">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo_icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>e-Mebel CRM</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-    <style>
-      :root {
-        --primary-blue: #2563eb;
-      }
-      body {
-        margin: 0;
-        font-family: 'Outfit', sans-serif;
-        background-color: #f8fafc;
-      }
-      #initial-loader {
-        position: fixed;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: #ffffff;
-        z-index: 9999;
-      }
-      .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid var(--primary-blue);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      .loading-text {
-        margin-top: 15px;
-        color: #64748b;
-        font-size: 14px;
-      }
-      /* React yuklanganda loader yashiriladi */
-      #root:not(:empty) + #initial-loader {
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/logo_icon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>e-Mebel</title>
 
-    <div id="initial-loader">
-      <div class="spinner"></div>
-      <div class="loading-text">Tizim yuklanmoqda...</div>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary-blue: #2563eb;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      background-color: #f8fafc;
+    }
+
+    #initial-loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      z-index: 9999;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary-blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-text {
+      margin-top: 15px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* React yuklanganda loader yashiriladi */
+    #root:not(:empty)+#initial-loader {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <div id="initial-loader">
+    <div class="spinner"></div>
+    <div class="loading-text">Tizim yuklanmoqda...</div>
+  </div>
+
+  <script type="module" src="/src/main.jsx"></script>
+
+  <noscript>
+    <div style="text-align: center; padding: 20px;">
+      Iltimos, JavaScript-ni yoqing.
     </div>
+  </noscript>
+</body>
 
-    <script type="module" src="/src/main.jsx"></script>
-    
-    <noscript>
-      <div style="text-align: center; padding: 20px;">
-        Iltimos, JavaScript-ni yoqing.
-      </div>
-    </noscript>
-  </body>
 </html>
