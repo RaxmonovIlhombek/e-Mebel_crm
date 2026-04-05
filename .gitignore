@@ -2,7 +2,7 @@
 emebel_api/.env
 emebel_api/db.sqlite3
 emebel_api/venv/
-emebel_api/media/
+# emebel_api/media/
 emebel_api/__pycache__/
 emebel_api/*.pyc
 emebel_api/staticfiles/
