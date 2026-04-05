@@ -3,8 +3,8 @@ services:
     name: emebel-api
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: bash start.sh
+    buildCommand: pip install -r emebel_api/requirements.txt
+    startCommand: cd emebel_api && bash start.sh
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
