@@ -389,7 +389,7 @@ const loadStocks = useCallback(async () => {
 
   // USB skaner
   useBarcodeScanner(
-    useCallback((code) => handleScan(code), []), // eslint-disable-line
+    useCallback((code) => handleScan(code), [handleScan]), 
     !showManual && !showCamera
   )
 
@@ -403,15 +403,28 @@ const loadStocks = useCallback(async () => {
   )
 
   // SKU / barcode qidiruvni kuchaytirish
-const findByCode = useCallback((code) => {
-  // .replace(/[^a-zA-Z0-9-]/g, "") — harf, raqam va chiziqchadan boshqa hamma narsani olib tashlaydi
-  const c = code.trim().toUpperCase();
-  
-  return stocks.find(s => {
-    const sku = s.product_sku?.trim().toUpperCase();
-    return sku === c || sku?.includes(c) || c.includes(sku);
-  }) || null;
-}, [stocks]);
+  const findByCode = useCallback((code) => {
+    if (!code) return null;
+    const c = code.trim().toUpperCase();
+    const cleanC = c.replace(/[^A-Z0-9]/g, '');
+
+    return stocks.find(s => {
+      const sku = s.product_sku?.trim().toUpperCase();
+      const barcode = s.product_barcode?.trim().toUpperCase();
+      
+      // Aniqlangan SKU yoki Barcode bilan to'g'ridan-to'g'ri solishtirish
+      if (sku === c || barcode === c) return true;
+      
+      // Agar SKU/Barcode ichida qatnashsa
+      if (sku?.includes(c) || barcode?.includes(c)) return true;
+      
+      // Tozalangan (faqat raqam/harf) ko'rinishda solishtirish
+      if (cleanC && sku?.replace(/[^A-Z0-9]/g, '') === cleanC) return true;
+      if (cleanC && barcode?.replace(/[^A-Z0-9]/g, '') === cleanC) return true;
+
+      return false;
+    }) || null;
+  }, [stocks]);
   // Savatga qo'shish
   const addToCart = useCallback((stock) => {
     setCart(prev => {
@@ -524,7 +537,8 @@ const findByCode = useCallback((code) => {
     if (!searchFilter) return true
     const q = searchFilter.toLowerCase()
     return s.product_name?.toLowerCase().includes(q) ||
-           s.product_sku?.toLowerCase().includes(q)
+           s.product_sku?.toLowerCase().includes(q) ||
+           s.product_barcode?.toLowerCase().includes(q)
   })
 
   return (

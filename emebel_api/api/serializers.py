@@ -483,6 +483,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 class StockSerializer(serializers.ModelSerializer):
     product_name     = serializers.CharField(source='product.name',           read_only=True)
     product_sku      = serializers.CharField(source='product.sku',            read_only=True)
+    product_barcode  = serializers.CharField(source='product.barcode',        read_only=True, default='')
     product_category = serializers.CharField(source='product.category.name',  read_only=True, default='')
     product_price    = serializers.DecimalField(source='product.selling_price', max_digits=14, decimal_places=2, read_only=True)
     product_cost     = serializers.DecimalField(source='product.cost_price',    max_digits=14, decimal_places=2, read_only=True)
@@ -491,7 +492,7 @@ class StockSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Stock
         fields = [
-            'id', 'product', 'product_name', 'product_sku', 'product_category',
+            'id', 'product', 'product_name', 'product_sku', 'product_barcode', 'product_category',
             'product_price', 'product_cost',
             'quantity', 'min_quantity', 'is_low', 'updated_at',
         ]
