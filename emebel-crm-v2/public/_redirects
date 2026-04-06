@@ -1,0 +1,3 @@
+/api/*    https://emebel-api.onrender.com/api/:splat    200
+/media/*  https://emebel-api.onrender.com/media/:splat  200
+/*        /index.html                                   200
