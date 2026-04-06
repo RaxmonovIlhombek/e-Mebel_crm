@@ -155,6 +155,12 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5173",
+    "https://e-mebel.uz",
+    "https://www.e-mebel.uz",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://e-mebel.uz",
+    "https://www.e-mebel.uz",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
