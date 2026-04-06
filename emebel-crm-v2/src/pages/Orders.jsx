@@ -416,6 +416,7 @@ function KanbanCard({ order, color, dragging, moving, onDragStart, onDragEnd, on
 ═══════════════════════════════════════════════════════════════════════════ */
 function OrderDetailModal({ orderId, onClose, toast, onReload, user }) {
   const isClient = user?.role === 'client'
+  const isWorker = user?.role === 'worker'
   const { data: order, loading, error: fetchError, reload: reloadOrder } = useFetch(`/orders/${orderId}/`)
   const [payForm, setPayForm] = useState({ amount: '', method: 'cash', note: '' })
   const [savingPay, setSavingPay] = useState(false)
