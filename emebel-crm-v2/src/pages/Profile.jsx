@@ -83,6 +83,32 @@ export default function Profile() {
     finally { setSaving(false) }
   }
 
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast('Rasm hajmi juda katta (maks: 5MB)', 'error')
+      return
+    }
+
+    const fd = new FormData()
+    fd.append('avatar', file)
+
+    setSaving(true)
+    try {
+      const updated = await api.updateMe(fd)
+      const merged = { ...user, ...updated }
+      localStorage.setItem('crm_user', JSON.stringify(merged))
+      toast('Avatar yangilandi ✅')
+      setTimeout(() => window.location.reload(), 500)
+    } catch(err) {
+      toast(err.message || 'Rasm yuklashda xato', 'error')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   // ── Password form ──────────────────────────────────────────────────────────
   const [pass, setPass] = useState({ old:'', new1:'', new2:'' })
   const [showPass, setShowPass] = useState({ old:false, new1:false, new2:false })
@@ -175,7 +201,7 @@ export default function Profile() {
               <Camera size={12} color="#64748b"/>
             </button>
             <input ref={fileRef} type="file" accept="image/*" style={{display:'none'}}
-              onChange={e => { if(e.target.files[0]) toast('Avatar yuklash tez kunda qo\'shiladi', 'error') }}/>
+              onChange={handleAvatarChange}/>
           </div>
 
           {/* Info + actions */}

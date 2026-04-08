@@ -398,7 +398,7 @@ const loadStocks = useCallback(async () => {
     useCallback((code) => {
       handleScan(code)
       setShowCamera(false)
-    }, []), // eslint-disable-line
+    }, [handleScan]), 
     showCamera
   )
 
@@ -532,14 +532,16 @@ const loadStocks = useCallback(async () => {
     }
   }
 
-  // Filtr
-  const filteredStocks = stocks.filter(s => {
-    if (!searchFilter) return true
-    const q = searchFilter.toLowerCase()
-    return s.product_name?.toLowerCase().includes(q) ||
-           s.product_sku?.toLowerCase().includes(q) ||
-           s.product_barcode?.toLowerCase().includes(q)
-  })
+  // Filtr (Optimized with useMemo)
+  const filteredStocks = useMemo(() => {
+    return stocks.filter(s => {
+      if (!searchFilter) return true
+      const q = searchFilter.toLowerCase()
+      return s.product_name?.toLowerCase().includes(q) ||
+             s.product_sku?.toLowerCase().includes(q) ||
+             s.product_barcode?.toLowerCase().includes(q)
+    })
+  }, [stocks, searchFilter])
 
   return (
     <div style={{ minHeight: '100vh', background: '#F0F4FF' }}>

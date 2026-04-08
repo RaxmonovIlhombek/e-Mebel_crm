@@ -70,7 +70,9 @@ class ApiClient {
   register       = (data)  => this.post('/auth/register/',        data)
   logout         = ()      => this.post('/auth/logout/')
   me             = ()      => this.get('/auth/me/')
-  updateMe       = (data)  => this.patch('/auth/me/',             data)
+  updateMe       = (data)  => (data instanceof FormData) 
+    ? this.patchForm('/auth/me/', data) 
+    : this.patch('/auth/me/', data)
   changePassword = (data)  => this.post('/auth/change-password/', data)
 
 

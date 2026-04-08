@@ -204,7 +204,7 @@ export default function Orders() {
 /* ═══════════════════════════════════════════════════════════════════════════
    KANBAN BOARD
 ═══════════════════════════════════════════════════════════════════════════ */
-function KanbanBoard({ orders, statuses, onSelect, onStatusChange }) {
+function KanbanBoard({ orders, statuses, onSelect, onStatusChange, isWorker }) {
   const [dragging, setDragging] = useState(null)  // { orderId, fromStatus }
   const [dragOver, setDragOver] = useState(null)  // status key
   const [moving, setMoving] = useState(null)  // orderId being moved
