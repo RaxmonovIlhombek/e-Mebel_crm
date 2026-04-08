@@ -387,22 +387,7 @@ const loadStocks = useCallback(async () => {
 
   useEffect(() => { loadStocks() }, [loadStocks])
 
-  // USB skaner
-  useBarcodeScanner(
-    useCallback((code) => handleScan(code), [handleScan]), 
-    !showManual && !showCamera
-  )
-
-  // Kamera skaner
-  const { videoRef, camError, hasTorch, torchOn, toggleTorch } = useCameraScanner(
-    useCallback((code) => {
-      handleScan(code)
-      setShowCamera(false)
-    }, [handleScan]), 
-    showCamera
-  )
-
-  // SKU / barcode qidiruvni kuchaytirish
+  // ── Skaner funksiyalari (Hoisted definition) ──
   const findByCode = useCallback((code) => {
     if (!code) return null;
     const c = code.trim().toUpperCase();
@@ -411,21 +396,14 @@ const loadStocks = useCallback(async () => {
     return stocks.find(s => {
       const sku = s.product_sku?.trim().toUpperCase();
       const barcode = s.product_barcode?.trim().toUpperCase();
-      
-      // Aniqlangan SKU yoki Barcode bilan to'g'ridan-to'g'ri solishtirish
       if (sku === c || barcode === c) return true;
-      
-      // Agar SKU/Barcode ichida qatnashsa
       if (sku?.includes(c) || barcode?.includes(c)) return true;
-      
-      // Tozalangan (faqat raqam/harf) ko'rinishda solishtirish
       if (cleanC && sku?.replace(/[^A-Z0-9]/g, '') === cleanC) return true;
       if (cleanC && barcode?.replace(/[^A-Z0-9]/g, '') === cleanC) return true;
-
       return false;
     }) || null;
   }, [stocks]);
-  // Savatga qo'shish
+
   const addToCart = useCallback((stock) => {
     setCart(prev => {
       const idx    = prev.findIndex(i => i.stock.id === stock.id)
@@ -454,7 +432,6 @@ const loadStocks = useCallback(async () => {
     setTimeout(() => setLastFound(null), 2000)
   }, [mode, toast])
 
-  // Skan handler
   const handleScan = useCallback((code) => {
     const found = findByCode(code)
     if (found) {
@@ -471,6 +448,23 @@ const loadStocks = useCallback(async () => {
       setTimeout(() => { setNotFound(''); setFlash(null) }, 3000)
     }
   }, [findByCode, addToCart, toast])
+
+  // USB skaner
+  useBarcodeScanner(
+    useCallback((code) => handleScan(code), [handleScan]), 
+    !showManual && !showCamera
+  )
+
+  // Kamera skaner
+  const { videoRef, camError, hasTorch, torchOn, toggleTorch } = useCameraScanner(
+    useCallback((code) => {
+      handleScan(code)
+      setShowCamera(false)
+    }, [handleScan]), 
+    showCamera
+  )
+
+  // ... (Moved below)
 
   // Qo'lda kiritish
   const handleManual = () => {
