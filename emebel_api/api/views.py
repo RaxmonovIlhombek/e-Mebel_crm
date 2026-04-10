@@ -187,14 +187,16 @@ class DashboardView(APIView):
         total_revenue = float(orders.aggregate(s=Sum('paid_amount'))['s'] or 0)
         
         if isAdmin:
-            total_debt = sum(
-                float(o.remaining_amount)
-                for o in orders.filter(payment_status__in=['unpaid', 'partial'])
-                               .exclude(status='cancelled')
-                               .only('total_amount', 'paid_amount')
+            total_debt = float(
+                orders.filter(payment_status__in=['unpaid', 'partial'])
+                .exclude(status='cancelled')
+                .aggregate(d=Sum(F('total_amount') - F('paid_amount'), output_field=DField()))['d'] or 0
             )
         else:
-            total_debt = sum(float(o.remaining_amount) for o in orders.exclude(status='cancelled'))
+            total_debt = float(
+                orders.exclude(status='cancelled')
+                .aggregate(d=Sum(F('total_amount') - F('paid_amount'), output_field=DField()))['d'] or 0
+            )
 
         # 3. Counts & Statuses
         today_orders     = orders.filter(created_at__date=today).count()

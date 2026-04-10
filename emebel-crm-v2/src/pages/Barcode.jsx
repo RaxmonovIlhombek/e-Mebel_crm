@@ -432,8 +432,31 @@ const loadStocks = useCallback(async () => {
     setTimeout(() => setLastFound(null), 2000)
   }, [mode, toast])
 
-  const handleScan = useCallback((code) => {
-    const found = findByCode(code)
+  const handleScan = useCallback(async (code) => {
+    let found = findByCode(code)
+
+    if (!found) {
+      setLoading(true)
+      try {
+        // Agar lokal ro'yxatda topilmasa, API orqali qidiramiz (paginatsiya muammosini hal qilish uchun)
+        const res = await api.stock({ search: code });
+        const data = Array.isArray(res) ? res : (res?.results || res?.data || []);
+        
+        if (data.length > 0) {
+          found = data[0];
+          // Topilgan mahsulotni lokal ro'yxatga qo'shib qo'yamiz
+          setStocks(prev => {
+            if (prev.find(s => s.id === found.id)) return prev;
+            return [...prev, found];
+          });
+        }
+      } catch (e) {
+        console.error("Barcode API fallback error:", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     if (found) {
       addToCart(found)
       playBeep()
