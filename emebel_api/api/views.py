@@ -38,6 +38,15 @@ from .serializers import (
     MessageSerializer, MessageCreateSerializer,
 )
 
+from apps.telegram_bot.notify import (
+    notify_new_registration,
+    notify_password_reset_request,
+    notify_new_order,
+    notify_order_confirmed,
+    notify_order_cancelled,
+    notify_payment_confirmed
+)
+
 
 # ══════════════════ AUTH ══════════════════════════════════════════════
 
@@ -109,7 +118,6 @@ class RegisterView(APIView):
         )
         
         # Adminga xabar yuborish
-        from apps.telegram_bot.notify import notify_new_registration
         notify_new_registration(user)
         
         return Response({
@@ -126,7 +134,6 @@ class PasswordResetRequestView(APIView):
         if not identity:
             return Response({'error': "Username yoki telefon kiriting"}, status=400)
         
-        from apps.telegram_bot.notify import notify_password_reset_request
         notify_password_reset_request(identity)
         
         return Response({'message': "So'rov yuborildi. Admin tez orada bog'lanadi."})
@@ -448,7 +455,6 @@ class OrderListCreateView(generics.ListCreateAPIView):
             
         order = serializer.save(**extra)
         try:
-            from apps.telegram_bot.notify import notify_new_order
             notify_new_order(order)
         except Exception:
             pass
@@ -556,7 +562,6 @@ class OrderStatusUpdateView(APIView):
         order.save()
 
         try:
-            from apps.telegram_bot.notify import notify_order_confirmed, notify_order_cancelled
             if new_status == 'production' and old_status == 'new':
                 notify_order_confirmed(order)
             elif new_status == 'cancelled':
@@ -594,7 +599,6 @@ class PaymentCreateView(generics.CreateAPIView):
         order.save()
 
         try:
-            from apps.telegram_bot.notify import notify_payment_confirmed
             notify_payment_confirmed(order, payment)
         except Exception:
             pass
